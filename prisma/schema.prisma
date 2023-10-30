@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  loginId String @unique
+  password String
+  firstName String?
+  lastName String?
+  createdAt DateTime @default(now())
+}
+
+model Sales {
+  id Int @id @default(autoincrement())
+  total Int
+  costPrice Int
+  name String?
+  phoneNumer String?
+  paid Int
+  discount Int?
+  owing Int?
+  payment Int[]
+  createdAt DateTime @default(now())
+  saleId String
+  change Int?
+  mode String
+  items Items[]
+  payments Payments[]
+}
+
+model Items {
+  id Int @id @default(autoincrement())
+  description String
+  costPrice Int
+  salesPrice Int
+  unitPrice Int
+  amount Int
+  quantity Float
+  category String?
+  createdAt DateTime @default(now())
+  sale Sales @relation(fields:[saleId],references:[id],onDelete: Cascade)
+  saleId Int
+}
+
+model Goods {
+  id Int @id @default(autoincrement())
+  description String @unique
+  unitPrice Float
+  retailPrice Float
+  wholesalePrice Float
+  category String?
+}
+
+model Categories {
+  id Int @id @default(autoincrement())
+  category String @unique
+}
+
+model Payments {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  amount Int
+  teller String
+  sale Sales @relation(fields:[saleId],references:[id],onDelete: Cascade)
+  saleId Int
+}
